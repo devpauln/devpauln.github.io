@@ -1,17 +1,22 @@
-name: Deploy portfolio to GitHub Pages
+name: Build portfolio for GitHub Pages
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.nojekyll'
+      - 'assets/**'
+      - 'favicon.svg'
+      - 'index.html'
+      - 'og.png'
+      - 'Victor-Paul-Noel-CV.pdf'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: portfolio-build
   cancel-in-progress: true
 
 jobs:
@@ -31,19 +36,22 @@ jobs:
         env:
           SITE_BASE_PATH: ''
         run: pnpm build:github
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/github
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Update published files
+        run: |
+          rm -rf assets
+          cp -R dist/github/assets assets
+          cp dist/github/.nojekyll .nojekyll
+          cp dist/github/favicon.svg favicon.svg
+          cp dist/github/index.html index.html
+          cp dist/github/og.png og.png
+          cp dist/github/Victor-Paul-Noel-CV.pdf Victor-Paul-Noel-CV.pdf
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .nojekyll assets favicon.svg index.html og.png Victor-Paul-Noel-CV.pdf
+          if git diff --cached --quiet; then
+            echo "Published files are already current."
+          else
+            git commit -m "Update published portfolio"
+            git push
+          fi
 
