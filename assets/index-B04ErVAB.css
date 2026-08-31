@@ -1,5 +1,0 @@
-Get-Content: 
-Line |
-   2 |  Get-Content -Raw -LiteralPath 'dist\github\assets\index-B04ErVAB.css'
-     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | Cannot find path 'dist\github\assets\index-B04ErVAB.css' because it does not exist.
