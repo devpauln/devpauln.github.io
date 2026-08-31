@@ -31,23 +31,19 @@ import {
 import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const projectGroups = {
-  modernization: [
-    { number: '01', title: 'Miller Structures, reimagined', summary: 'Rebuilt a structural engineering platform with Angular and .NET Core, connecting time tracking, Power BI reporting, SharePoint, and automated workflows.', result: '75% less manual paperwork', tags: ['Angular', '.NET Core', 'Power BI'], icon: Workflow },
-    { number: '02', title: 'Finance-grade data retention', summary: 'Led a microservice solution for financial statements and credit reporting, designed for integrity across an experimental OpenShift and Docker environment.', result: '30% fewer post-release bugs', tags: ['Microservices', 'Docker', 'OpenShift'], icon: Database },
-    { number: '03', title: 'From FTP to a modern publishing flow', summary: 'Led a three-engineer team enhancing a European book publishing system while replacing fragile FTP transfers with a Git-based process.', result: 'Faster, traceable releases', tags: ['Git', 'Team leadership', 'Publishing'], icon: GitBranch },
-  ],
-  intelligence: [
-    { number: '04', title: 'AI inside Microsoft Teams', summary: 'Integrated Azure Bot, OpenAI, and LUIS into a company chatbot for time tracking, automatic scheduling, and organization lookups.', result: 'Work happens where teams talk', tags: ['Azure AI', 'OpenAI', 'MS Teams'], icon: Bot },
-    { number: '05', title: 'Language assessment at scale', summary: 'Took a language screening and certification platform from an initial concept to a complete product with speech-to-text scoring and international standards.', result: '180% higher user engagement', tags: ['Speech-to-text', '.NET', 'Education'], icon: Sparkles },
-    { number: '06', title: 'Spider Platform Redesign', summary: 'Redesigned a legacy Python spider into a dependable ETL workflow for ATS and job sites, improving both accuracy and detail capture.', result: '75% accuracy gain · 100% detail capture', tags: ['ETL', 'Node.js', 'PHP'], icon: Network },
-  ],
-  platforms: [
-    { number: '07', title: 'One desk for every social channel', summary: 'Engineered a centralized platform for scheduling, controlling, and managing multiple social networks and their operational workflows.', result: 'One source of control', tags: ['Angular', 'APIs', 'Scheduling'], icon: Layers3 },
-    { number: '08', title: 'Infrastructure made observable', summary: 'Built support dashboards and deployment automation while leading the Philippine DevOps team across Elasticsearch, Logstash, and Kibana.', result: 'Clearer operations, faster support', tags: ['ELK', 'DevOps', 'Automation'], icon: ServerCog },
-    { number: '09', title: 'Connected business operations', summary: 'Delivered internal ERP, asset management, student management, and reliability systems for education and heavy-equipment organizations.', result: 'Complex workflows, simplified', tags: ['ERP', 'Asset management', 'SQL'], icon: Blocks },
-  ],
-};
+const projects = [
+  { number: '01', category: 'modernization', title: 'Redesigned Engineering Software', summary: 'Modernized structural engineering software with time tracking, Power BI reports, automated workflows, and SharePoint integration.', result: '75% less manual paperwork', tags: ['Angular', '.NET Core', 'Power BI'], icon: Workflow },
+  { number: '02', category: 'intelligence', title: 'AI Teams Chatbot', summary: 'Integrated Microsoft Teams with Azure Bot, OpenAI, and LUIS for time tracking, automatic scheduling, and organization lookups.', result: 'AI support inside daily workflows', tags: ['Azure AI', 'OpenAI', 'MS Teams'], icon: Bot },
+  { number: '03', category: 'intelligence', title: 'Language Assessment Software', summary: 'Built a language screening, learning, and certification platform with speech-to-text scoring aligned to international standards.', result: '180% higher user engagement', tags: ['Speech-to-text', '.NET', 'Education'], icon: Sparkles },
+  { number: '04', category: 'modernization', title: 'Spider Redesign Project', summary: 'Reworked a legacy Python spider into an ETL implementation using Node.js and PHP to collect jobs from ATS and job sites.', result: '75% accuracy gain · 100% detail capture', tags: ['ETL', 'Node.js', 'PHP'], icon: Network },
+  { number: '05', category: 'modernization', title: 'Data Retention System', summary: 'Developed microservice support for financial data integrity and Power BI integration across credit and finance reporting.', result: '30% fewer post-release bugs', tags: ['Microservices', 'Docker', 'Power BI'], icon: Database },
+  { number: '06', category: 'platforms', title: 'Social Media Platform Management', summary: 'Created a central workspace for scheduling, managing, and controlling activity across multiple social platforms.', result: 'One source of operational control', tags: ['Social APIs', 'Scheduling', 'Angular'], icon: Layers3 },
+  { number: '07', category: 'modernization', title: 'Book Publishing System', summary: 'Enhanced a European publishing and author-management platform while moving fragile FTP transfers to a Git-based workflow.', result: 'Faster, traceable releases', tags: ['Git', 'Publishing', 'Team leadership'], icon: GitBranch },
+  { number: '08', category: 'platforms', title: 'Infrastructure Support Tool', summary: 'Built support tooling with dashboard reports and deployment automation for day-to-day IT infrastructure operations.', result: 'Clearer operations, faster support', tags: ['ELK', 'DevOps', 'Automation'], icon: ServerCog },
+  { number: '09', category: 'platforms', title: 'Internal ERP System', summary: 'Delivered a customized enterprise resource planning system for internal company operations and connected workflows.', result: 'Business processes in one system', tags: ['ERP', 'SQL', 'Workflow'], icon: Blocks },
+  { number: '10', category: 'platforms', title: 'Asset Management', summary: 'Designed a tailored asset-management solution for heavy equipment, organizations, and reliability engineering teams.', result: 'Assets and reliability connected', tags: ['Asset management', 'Reliability', 'SQL'], icon: BriefcaseBusiness },
+  { number: '11', category: 'platforms', title: 'Student Management System', summary: 'Built software for managing student records, school buses, and class assignments across school operations.', result: 'Simpler education administration', tags: ['Education', 'Operations', 'Web app'], icon: GraduationCap },
+] as const;
 
 const roles = [
   { period: '2025 — Now', role: 'Software Engineering Consultant', company: 'ByDesign Technologies', place: 'Florida, US · Remote', note: 'Modern application development, rigorous code review, SQL nightly-operation optimization, and global Nuvei payment and tax-engine integrations.' },
@@ -72,10 +68,10 @@ const skillGroups = [
 
 const publicBase = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
-function ProjectGrid({ projects }: { projects: typeof projectGroups.modernization }) {
+function ProjectGrid({ items }: { items: readonly (typeof projects)[number][] }) {
   return (
     <div className="project-grid">
-      {projects.map((project) => {
+      {items.map((project) => {
         const Icon = project.icon;
         return (
           <article className="project-card" key={project.number}>
@@ -140,15 +136,17 @@ export default function Home() {
           <h2>Useful systems.<br /><em>Measurable change.</em></h2>
           <p>I work where product thinking, architecture, and delivery meet—often modernizing the systems businesses rely on most.</p>
         </div>
-        <Tabs defaultValue="modernization" className="project-tabs">
+        <Tabs defaultValue="all" className="project-tabs">
           <TabsList variant="line" aria-label="Project categories">
+            <TabsTrigger value="all">All projects</TabsTrigger>
             <TabsTrigger value="modernization">Modernization</TabsTrigger>
             <TabsTrigger value="intelligence">AI & automation</TabsTrigger>
             <TabsTrigger value="platforms">Platforms</TabsTrigger>
           </TabsList>
-          <TabsContent value="modernization"><ProjectGrid projects={projectGroups.modernization} /></TabsContent>
-          <TabsContent value="intelligence"><ProjectGrid projects={projectGroups.intelligence} /></TabsContent>
-          <TabsContent value="platforms"><ProjectGrid projects={projectGroups.platforms} /></TabsContent>
+          <TabsContent value="all"><ProjectGrid items={projects} /></TabsContent>
+          <TabsContent value="modernization"><ProjectGrid items={projects.filter((project) => project.category === 'modernization')} /></TabsContent>
+          <TabsContent value="intelligence"><ProjectGrid items={projects.filter((project) => project.category === 'intelligence')} /></TabsContent>
+          <TabsContent value="platforms"><ProjectGrid items={projects.filter((project) => project.category === 'platforms')} /></TabsContent>
         </Tabs>
       </section>
 
@@ -159,17 +157,21 @@ export default function Home() {
       </section>
 
       <section id="experience" className="section-wrap experience-section">
-        <div className="section-intro compact">
+        <div className="section-intro experience-intro">
           <div><span className="section-index">02</span><p className="section-kicker">Experience</p></div>
           <h2>A career built<br />across <em>the stack.</em></h2>
+          <p>Recent roles across consulting, product delivery, modernization, and platform engineering—with every location kept close to the work it belongs to.</p>
         </div>
         <div className="timeline">
           {roles.slice(0, 6).map((item, index) => (
             <article className="timeline-item" key={`${item.company}-${item.period}`}>
               <span className="timeline-number">{String(index + 1).padStart(2, '0')}</span>
-              <p className="timeline-period">{item.period}</p>
-              <div><h3>{item.role}</h3><p className="company">{item.company}</p><p className="role-note">{item.note}</p></div>
-              <p className="place"><MapPin size={14} /> {item.place}</p>
+              <div className="timeline-body">
+                <div className="role-meta"><p className="timeline-period">{item.period}</p><p className="place"><MapPin size={14} /> {item.place}</p></div>
+                <h3>{item.role}</h3>
+                <p className="company">{item.company}</p>
+                <p className="role-note">{item.note}</p>
+              </div>
             </article>
           ))}
           <details className="earlier-career">
