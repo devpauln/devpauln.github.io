@@ -1,8 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Download, Lightbulb, Mail, MapPin, Phone, Check, ChevronRight } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Download, Lightbulb, Mail, MapPin, Phone, Check, ChevronRight, Pause, Play } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { AmbientBackdrop } from './ambient-backdrop';
 import { projects, projectStories, roles } from './content';
 import { consumeWheel } from '@/lib/wheel-navigation.mjs';
 
@@ -53,6 +55,9 @@ function Pager({ index, total, onChange, label }: { index: number; total: number
 export default function Home() {
   const [active, setActive] = useState(0);
   const [dark, setDark] = useState(false);
+  const [motionPaused, setMotionPaused] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [pageHidden, setPageHidden] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
   const [projectIndex, setProjectIndex] = useState(0);
   const [category, setCategory] = useState('all');
@@ -62,6 +67,27 @@ export default function Home() {
   const lock = useRef(0);
   const wheel = useRef({ total: 0, last: 0 });
   const touch = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = () => setReducedMotion(preference.matches);
+    const syncVisibility = () => setPageHidden(document.hidden);
+    syncPreference();
+    syncVisibility();
+    try { setMotionPaused(localStorage.getItem('portfolio-motion') === 'paused'); } catch { /* Optional preference. */ }
+    preference.addEventListener('change', syncPreference);
+    document.addEventListener('visibilitychange', syncVisibility);
+    return () => {
+      preference.removeEventListener('change', syncPreference);
+      document.removeEventListener('visibilitychange', syncVisibility);
+    };
+  }, []);
+
+  const toggleMotion = () => {
+    const next = !motionPaused;
+    setMotionPaused(next);
+    try { localStorage.setItem('portfolio-motion', next ? 'paused' : 'active'); } catch { /* Works without storage. */ }
+  };
 
   const navigate = useCallback((value: number) => {
     const next = Math.max(0, Math.min(sections.length - 1, value));
@@ -135,10 +161,11 @@ export default function Home() {
     try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch { /* Theme still works without storage. */ }
   };
 
-  return <main className="portfolio">
+  return <main className="portfolio" data-motion={motionPaused || reducedMotion || pageHidden ? 'paused' : 'active'}>
+    <AmbientBackdrop />
     <header className="masthead">
       <button className="identity" onClick={() => navigate(0)} aria-label="Victor Paul Noel, overview"><span className="monogram">vn<span>.</span></span><span className="identity-name">VICTOR PAUL NOEL<small>Software engineering</small></span></button>
-      <div className="header-actions"><a className="resume-link" href={base + '/Victor-Paul-Noel-CV.pdf'} download><Download size={16} /><span>Résumé</span></a><button className="bulb" onClick={toggleTheme} aria-label={'Switch to ' + (dark ? 'light' : 'dark') + ' mode'} aria-pressed={dark}><Lightbulb size={20} /></button></div>
+      <div className="header-actions"><Button variant="ghost" className="motion-toggle" onClick={toggleMotion} disabled={reducedMotion} aria-pressed={!motionPaused && !reducedMotion} aria-label={reducedMotion ? 'Animations disabled by your reduced-motion preference' : motionPaused ? 'Resume animations' : 'Pause animations'} title={reducedMotion ? 'Reduced motion is enabled on your device' : motionPaused ? 'Resume animations' : 'Pause animations'}>{motionPaused || reducedMotion ? <Play size={14} /> : <Pause size={14} />}<span>Motion {motionPaused || reducedMotion ? 'off' : 'on'}</span></Button><a className="resume-link" href={base + '/Victor-Paul-Noel-CV.pdf'} download><Download size={16} /><span>Résumé</span></a><button className="bulb" onClick={toggleTheme} aria-label={'Switch to ' + (dark ? 'light' : 'dark') + ' mode'} aria-pressed={dark}><Lightbulb key={dark ? 'lit' : 'unlit'} size={20} /></button></div>
     </header>
     <Tabs value={sections[active]} onValueChange={value => navigate(sections.indexOf(value as typeof sections[number]))} className="workspace">
       <TabsList className="section-nav" variant="line" aria-label="Portfolio sections">
@@ -157,7 +184,7 @@ export default function Home() {
         }}>
         <TabsContent value="Overview" className="view overview">
           <div className="intro">
-            <p className="eyebrow"><span className="status-dot" /> SENIOR SOFTWARE ENGINEER</p>
+            <p className="eyebrow"><span className="status-dot" /> SENIOR SOFTWARE ENGINEER<span className="terminal-cursor" aria-hidden="true">_</span></p>
             <h1>Victor Paul<br /><span>Noel.</span></h1>
             <p className="intro-summary">I build reliable software<br className="desktop-break" /> that makes business simpler.</p>
             <p className="location"><MapPin size={15} /> Cebu City, Philippines</p>
@@ -227,6 +254,6 @@ export default function Home() {
       </div>
     </Tabs>
     <div className="technology-dock"><div className="dock-caption"><span className="eyebrow">CORE TECHNOLOGIES</span><span>Tools I work with</span></div><TechIcons names={core} /><button className="toolkit-link" onClick={() => navigate(3)} aria-label="View all technologies"><ArrowUpRight size={19} /></button></div>
-    <footer className="footer"><span className="section-status" aria-live="polite">0{active + 1} <i>/ 05</i><span>{sections[active]}</span></span><span className="scroll-hint">Scroll to explore <ArrowDown size={14} /></span><div className="section-arrows"><button disabled={active === 0} onClick={() => navigate(active - 1)} aria-label="Previous section"><ArrowLeft size={18} /></button><button disabled={active === 4} onClick={() => navigate(active + 1)} aria-label="Next section"><ArrowRight size={18} /></button></div></footer>
+    <footer className="footer"><span className="section-status" aria-live="polite">0{active + 1} <i>/ 05</i><span className="dev-location" key={active}><span aria-hidden="true">~/</span>{sections[active].toLowerCase()}<span aria-hidden="true">.tsx</span></span></span><span className="scroll-hint">Scroll to explore <ArrowDown size={14} /></span><div className="section-arrows"><button disabled={active === 0} onClick={() => navigate(active - 1)} aria-label="Previous section"><ArrowLeft size={18} /></button><button disabled={active === 4} onClick={() => navigate(active + 1)} aria-label="Next section"><ArrowRight size={18} /></button></div></footer>
   </main>;
 }

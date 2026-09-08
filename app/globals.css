@@ -191,4 +191,75 @@ h1 { margin: 0 0 20px; font-size: clamp(56px,6.6vw,92px); line-height: .98; font
   .project-detail h3, .detail-card h3 { overflow-wrap: anywhere; }
   .contact-card a span { min-width: 0; overflow-wrap: anywhere; }
 }
+/* Quiet developer-workspace motion, kept behind the reading surface. */
+.portfolio { position: relative; isolation: isolate; }
+.ambient-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; user-select: none; }
+.ambient-grid { position: absolute; inset: 0; opacity: .18; background-image: radial-gradient(var(--muted) .7px, transparent .9px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, #000, transparent 25%, transparent 63%, #000); }
+.ambient-glow { position: absolute; width: 65vw; height: 65vw; min-width: 420px; min-height: 420px; right: -28vw; bottom: -34vw; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 14%, transparent), transparent 65%); animation: ambient-orbit 22s ease-in-out infinite alternate; }
+.signal-traces { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--accent); stroke-width: 1; }
+.signal-rails { opacity: .12; }
+.signal-packets { stroke-width: 2; opacity: .4; stroke-linecap: round; }
+.signal-packets use { stroke-dasharray: 18 1200; animation: signal-flow 18s linear infinite; }
+.signal-packets use:nth-child(2) { animation-delay: -6s; animation-duration: 22s; }
+.signal-packets use:nth-child(3) { animation-delay: -12s; animation-duration: 26s; }
+.signal-nodes { fill: var(--paper); opacity: .45; }
+.code-fragments { position: absolute; inset: 0; font-family: Consolas, 'Courier New', monospace; font-weight: 400; color: var(--accent-text); }
+.code-fragments span { position: absolute; opacity: .14; font-size: clamp(18px, 2vw, 30px); animation: code-drift 12s ease-in-out infinite alternate; }
+.code-fragments span:nth-child(1) { left: 1%; top: 16%; }
+.code-fragments span:nth-child(2) { right: 1%; top: 22%; animation-delay: -4s; }
+.code-fragments span:nth-child(3) { left: 12%; bottom: 17%; animation-delay: -8s; }
+.code-fragments span:nth-child(4) { right: 20%; bottom: 20%; animation-delay: -3s; }
+.code-fragments span:nth-child(5) { right: 3%; top: 67%; animation-delay: -6s; font-size: 16px; }
+.code-fragments span:nth-child(6) { left: 46%; bottom: 9%; animation-delay: -10s; font-size: 18px; }
+.dark .signal-packets { opacity: .5; }
+.dark .code-fragments span { opacity: .1; }
+.detail-card { background: color-mix(in srgb, var(--paper) 96%, transparent); }
+.masthead, .technology-dock { background: color-mix(in srgb, var(--paper) 92%, transparent); }
+.header-actions { gap: 18px; }
+.motion-toggle[data-slot=button] { height: 36px; font-family: var(--font-sans); font-size: 12px; font-weight: 400; gap: 6px; color: var(--muted); border: 1px solid var(--line); border-radius: 3px; padding: 6px 9px; }
+.motion-toggle[data-slot=button]:hover { background: color-mix(in srgb, var(--line) 30%, transparent); }
+.motion-toggle[data-slot=button]:disabled { opacity: .65; }
+.terminal-cursor { font-family: Consolas, monospace; color: var(--accent-text); animation: cursor-breathe 2.4s ease-in-out infinite; }
+.status-dot { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent); }
+.dev-location { font-family: Consolas, 'Courier New', monospace; animation: arrive .3s ease both; }
+.dev-location > span { color: var(--accent-text); }
+.view[data-slot=tabs-content] { animation-duration: .5s; }
+.overview .intro > *, .overview .quick-profile > *, .view-heading, .filters, .detail-layout, .contact-card { animation: arrive .55s cubic-bezier(.2,.8,.2,1) both; }
+.intro > :nth-child(2), .quick-profile > :nth-child(2) { animation-delay: .06s; }
+.intro > :nth-child(3), .quick-profile > :nth-child(3), .filters { animation-delay: .12s; }
+.intro > :nth-child(4), .quick-profile > :nth-child(4) { animation-delay: .18s; }
+.intro > :nth-child(5), .quick-profile > :nth-child(5), .detail-layout, .contact-card { animation-delay: .24s; }
+.technology-dock .tech-icon { animation: dock-arrive .55s cubic-bezier(.2,.8,.2,1) backwards; }
+.technology-dock .tech-icon:nth-child(2n) { animation-delay: .08s; }
+.technology-dock .tech-icon:nth-child(3n) { animation-delay: .16s; }
+.technology-dock .tech-icon:nth-child(4n) { animation-delay: .24s; }
+.tech-icon img, .record > svg, .primary > svg, .text-button > svg, .contact-card a > svg:last-child, .toolkit-link svg { transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+.tech-icon:hover img, .tech-icon:focus-visible img { transform: rotate(-7deg) scale(1.08); }
+.record { transition: border-color .25s, background .25s; }
+.record:hover > svg, .record:focus-visible > svg, .text-button:hover > svg { transform: translateX(3px); }
+.primary:hover > svg, .contact-card a:hover > svg:last-child, .toolkit-link:hover svg { transform: translate(2px, -2px); }
+.bulb svg { animation: bulb-click .55s ease; }
+.bulb[aria-pressed=true] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 12%, transparent); }
+.scroll-hint svg { animation: scroll-nudge 3s ease-in-out infinite; }
+@keyframes signal-flow { from { stroke-dashoffset: 1218; } to { stroke-dashoffset: 0; } }
+@keyframes ambient-orbit { to { transform: translate(-12vw, -6vh) scale(1.15); } }
+@keyframes code-drift { from { transform: translateY(-7px) rotate(-3deg); } to { transform: translateY(9px) rotate(3deg); } }
+@keyframes cursor-breathe { 50% { opacity: .3; } }
+@keyframes dock-arrive { from { opacity: 0; transform: translateY(10px) scale(.9); } to { opacity: 1; transform: none; } }
+@keyframes bulb-click { 35% { transform: rotate(-18deg); } 65% { transform: rotate(9deg); } to { transform: rotate(0); } }
+@keyframes scroll-nudge { 0%, 65%, 100% { transform: translateY(0); } 80% { transform: translateY(4px); } }
+@media (max-width: 800px) {
+  .signal-traces { opacity: .6; }
+  .code-fragments span:nth-child(n+4) { display: none; }
+  .code-fragments span:nth-child(3) { left: auto; right: 8%; bottom: 17%; }
+  .ambient-glow { animation-duration: 30s; }
+}
+@media (max-width: 560px) {
+  .header-actions { gap: 8px; }
+  .motion-toggle[data-slot=button] { width: 32px; padding: 6px; }
+  .motion-toggle span { display: none; }
+  .code-fragments span { font-size: 18px; opacity: .09; }
+}
+/* Disabling motion must reveal newly selected panels, not freeze their entrance at opacity 0. */
+.portfolio[data-motion=paused] *, .portfolio[data-motion=paused] *::before, .portfolio[data-motion=paused] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
