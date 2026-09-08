@@ -1,0 +1,58 @@
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Blocks,
+  Bot,
+  BriefcaseBusiness,
+  Check,
+  ChevronDown,
+  Code2,
+  Cpu,
+  Database,
+  Download,
+  ExternalLink,
+  GraduationCap,
+  GitBranch,
+  Layers3,
+  Lightbulb,
+  Mail,
+  MapPin,
+  Network,
+  Phone,
+  Quote,
+  Rocket,
+  ServerCog,
+  ShieldCheck,
+  Sparkles,
+  Workflow,
+} from 'lucide-react';
+
+
+
+export const projects = [
+  { number: '01', category: 'modernization', title: 'Redesigned Engineering Software', summary: 'Modernized structural engineering software with time tracking, Power BI reports, automated workflows, and SharePoint integration.', result: '75% less manual paperwork', tags: ['Angular', '.NET Core', 'Power BI'], icon: Workflow },
+  { number: '02', category: 'intelligence', title: 'AI Teams Chatbot', summary: 'Integrated Microsoft Teams with Azure Bot, OpenAI, and LUIS for time tracking, automatic scheduling, and organization lookups.', result: 'AI support inside daily workflows', tags: ['Azure AI', 'OpenAI', 'MS Teams'], icon: Bot },
+  { number: '03', category: 'intelligence', title: 'Language Assessment Software', summary: 'Built a language screening, learning, and certification platform with speech-to-text scoring aligned to international standards.', result: '180% higher user engagement', tags: ['Speech-to-text', '.NET', 'Education'], icon: Sparkles },
+  { number: '04', category: 'modernization', title: 'Spider Redesign Project', summary: 'Reworked a legacy Python spider into an ETL implementation using Node.js and PHP to collect jobs from ATS and job sites.', result: '75% accuracy gain · 100% detail capture', tags: ['ETL', 'Node.js', 'PHP'], icon: Network },
+  { number: '05', category: 'modernization', title: 'Data Retention System', summary: 'Developed microservice support for financial data integrity and Power BI integration across credit and finance reporting.', result: '30% fewer post-release bugs', tags: ['Microservices', 'Docker', 'Power BI'], icon: Database },
+  { number: '06', category: 'platforms', title: 'Social Media Platform Management', summary: 'Created a central workspace for scheduling, managing, and controlling activity across multiple social platforms.', result: 'One source of operational control', tags: ['Social APIs', 'Scheduling', 'Angular'], icon: Layers3 },
+  { number: '07', category: 'modernization', title: 'Book Publishing System', summary: 'Enhanced a European publishing and author-management platform while moving fragile FTP transfers to a Git-based workflow.', result: 'Faster, traceable releases', tags: ['Git', 'Publishing', 'Team leadership'], icon: GitBranch },
+  { number: '08', category: 'platforms', title: 'Infrastructure Support Tool', summary: 'Built support tooling with dashboard reports and deployment automation for day-to-day IT infrastructure operations.', result: 'Clearer operations, faster support', tags: ['ELK', 'DevOps', 'Automation'], icon: ServerCog },
+  { number: '09', category: 'platforms', title: 'Internal ERP System', summary: 'Delivered a customized enterprise resource planning system for internal company operations and connected workflows.', result: 'Business processes in one system', tags: ['ERP', 'SQL', 'Workflow'], icon: Blocks },
+  { number: '10', category: 'platforms', title: 'Asset Management', summary: 'Designed a tailored asset-management solution for heavy equipment, organizations, and reliability engineering teams.', result: 'Assets and reliability connected', tags: ['Asset management', 'Reliability', 'SQL'], icon: BriefcaseBusiness },
+  { number: '11', category: 'platforms', title: 'Student Management System', summary: 'Built software for managing student records, school buses, and class assignments across school operations.', result: 'Simpler education administration', tags: ['Education', 'Operations', 'Web app'], icon: GraduationCap },
+] as const;
+
+export const roles = [
+  { period: '2025 — Now', role: 'Software Engineering Consultant', company: 'ByDesign Technologies', place: 'Florida, US · Remote', note: 'Modern application development, rigorous code review, SQL nightly-operation optimization, and global Nuvei payment and tax-engine integrations.' },
+  { period: '2025 — Now', role: 'Senior Software Engineer', company: 'Full Scale', place: 'Remote', note: 'Custom client development, internal timeclock collaboration, and rapid-response support across legacy and modern projects.' },
+  { period: '2020 — 2025', role: 'Software Engineer · Contract / On-call', company: 'Added Innovation', place: 'Missouri, US · Remote', note: 'Angular/.NET modernization, Azure OpenAI chatbot integration, secure Azure AD workflows, SQL architecture, and CI/CD delivery.' },
+  { period: '2024', role: 'Developer', company: 'University of Fredericton', place: 'New Brunswick, CA', note: 'SCORM storyboards and fluid, pixel-precise learning experiences.' },
+  { period: '2023 — 2024', role: 'Senior Software Engineer · .NET', company: 'Kaczmarski Group', place: 'Poland · Remote', note: 'Finance microservices, .NET 7, data retention, test strategy, delivery leadership, and UI modernization.' },
+  { period: '2016 — 2021', role: 'Senior Software Developer', company: 'CoDev Philippines', place: 'Cebu, PH', note: 'Greenfield language assessment software and major PHP, AngularJS, Laravel, and Microsoft-stack migrations.' },
+  { period: '2015 — 2016', role: 'Software Engineer', company: 'Cloud Employee', place: 'Cebu, PH', note: 'Python/Django social intelligence and team leadership for publishing software.' },
+  { period: '2012 — 2015', role: 'DevOps Engineer · Software Developer', company: 'JobTarget', place: 'Cebu, PH', note: 'Spidering and ETL redesign, ELK infrastructure, and ATS data integrations.' },
+  { period: '2012', role: 'Systems Engineer', company: 'DirectAccess Corporation', place: 'Cebu, PH', note: 'Network continuity, BPO software support, internal tools, and on-site infrastructure.' },
+  { period: '2011 — 2012', role: 'Software Development Intern', company: 'Asian College of Technology', place: 'Cebu, PH', note: 'Grading, enrollment, school website, and finance administration systems.' },
+  { period: '2010 — 2012', role: 'Lead PHP/WordPress Developer · Freelance', company: 'Cyberknights Solutions Inc.', place: 'Cebu, PH', note: 'PSD-to-WordPress builds and leadership of a three-person CRM development team.' },
+];

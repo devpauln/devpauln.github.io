@@ -1,230 +1,216 @@
 'use client';
 
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Blocks,
-  Bot,
-  BriefcaseBusiness,
-  Check,
-  ChevronDown,
-  Code2,
-  Cpu,
-  Database,
-  Download,
-  ExternalLink,
-  GraduationCap,
-  GitBranch,
-  Layers3,
-  Lightbulb,
-  Mail,
-  MapPin,
-  Network,
-  Phone,
-  Quote,
-  Rocket,
-  ServerCog,
-  ShieldCheck,
-  Sparkles,
-  Workflow,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Download, Lightbulb, Mail, MapPin, Phone, Check, ChevronRight } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { projects, roles } from './content';
+import { consumeWheel } from '@/lib/wheel-navigation.mjs';
 
-const projects = [
-  { number: '01', category: 'modernization', title: 'Redesigned Engineering Software', summary: 'Modernized structural engineering software with time tracking, Power BI reports, automated workflows, and SharePoint integration.', result: '75% less manual paperwork', tags: ['Angular', '.NET Core', 'Power BI'], icon: Workflow },
-  { number: '02', category: 'intelligence', title: 'AI Teams Chatbot', summary: 'Integrated Microsoft Teams with Azure Bot, OpenAI, and LUIS for time tracking, automatic scheduling, and organization lookups.', result: 'AI support inside daily workflows', tags: ['Azure AI', 'OpenAI', 'MS Teams'], icon: Bot },
-  { number: '03', category: 'intelligence', title: 'Language Assessment Software', summary: 'Built a language screening, learning, and certification platform with speech-to-text scoring aligned to international standards.', result: '180% higher user engagement', tags: ['Speech-to-text', '.NET', 'Education'], icon: Sparkles },
-  { number: '04', category: 'modernization', title: 'Spider Redesign Project', summary: 'Reworked a legacy Python spider into an ETL implementation using Node.js and PHP to collect jobs from ATS and job sites.', result: '75% accuracy gain · 100% detail capture', tags: ['ETL', 'Node.js', 'PHP'], icon: Network },
-  { number: '05', category: 'modernization', title: 'Data Retention System', summary: 'Developed microservice support for financial data integrity and Power BI integration across credit and finance reporting.', result: '30% fewer post-release bugs', tags: ['Microservices', 'Docker', 'Power BI'], icon: Database },
-  { number: '06', category: 'platforms', title: 'Social Media Platform Management', summary: 'Created a central workspace for scheduling, managing, and controlling activity across multiple social platforms.', result: 'One source of operational control', tags: ['Social APIs', 'Scheduling', 'Angular'], icon: Layers3 },
-  { number: '07', category: 'modernization', title: 'Book Publishing System', summary: 'Enhanced a European publishing and author-management platform while moving fragile FTP transfers to a Git-based workflow.', result: 'Faster, traceable releases', tags: ['Git', 'Publishing', 'Team leadership'], icon: GitBranch },
-  { number: '08', category: 'platforms', title: 'Infrastructure Support Tool', summary: 'Built support tooling with dashboard reports and deployment automation for day-to-day IT infrastructure operations.', result: 'Clearer operations, faster support', tags: ['ELK', 'DevOps', 'Automation'], icon: ServerCog },
-  { number: '09', category: 'platforms', title: 'Internal ERP System', summary: 'Delivered a customized enterprise resource planning system for internal company operations and connected workflows.', result: 'Business processes in one system', tags: ['ERP', 'SQL', 'Workflow'], icon: Blocks },
-  { number: '10', category: 'platforms', title: 'Asset Management', summary: 'Designed a tailored asset-management solution for heavy equipment, organizations, and reliability engineering teams.', result: 'Assets and reliability connected', tags: ['Asset management', 'Reliability', 'SQL'], icon: BriefcaseBusiness },
-  { number: '11', category: 'platforms', title: 'Student Management System', summary: 'Built software for managing student records, school buses, and class assignments across school operations.', result: 'Simpler education administration', tags: ['Education', 'Operations', 'Web app'], icon: GraduationCap },
-] as const;
-
-const roles = [
-  { period: '2025 — Now', role: 'Software Engineering Consultant', company: 'ByDesign Technologies', place: 'Florida, US · Remote', note: 'Modern application development, rigorous code review, SQL nightly-operation optimization, and global Nuvei payment and tax-engine integrations.' },
-  { period: '2025 — Now', role: 'Senior Software Engineer', company: 'Full Scale', place: 'Remote', note: 'Custom client development, internal timeclock collaboration, and rapid-response support across legacy and modern projects.' },
-  { period: '2020 — 2025', role: 'Software Engineer · Contract / On-call', company: 'Added Innovation', place: 'Missouri, US · Remote', note: 'Angular/.NET modernization, Azure OpenAI chatbot integration, secure Azure AD workflows, SQL architecture, and CI/CD delivery.' },
-  { period: '2024', role: 'Developer', company: 'University of Fredericton', place: 'New Brunswick, CA', note: 'SCORM storyboards and fluid, pixel-precise learning experiences.' },
-  { period: '2023 — 2024', role: 'Senior Software Engineer · .NET', company: 'Kaczmarski Group', place: 'Poland · Remote', note: 'Finance microservices, .NET 7, data retention, test strategy, delivery leadership, and UI modernization.' },
-  { period: '2016 — 2021', role: 'Senior Software Developer', company: 'CoDev Philippines', place: 'Cebu, PH', note: 'Greenfield language assessment software and major PHP, AngularJS, Laravel, and Microsoft-stack migrations.' },
-  { period: '2015 — 2016', role: 'Software Engineer', company: 'Cloud Employee', place: 'Cebu, PH', note: 'Python/Django social intelligence and team leadership for publishing software.' },
-  { period: '2012 — 2015', role: 'DevOps Engineer · Software Developer', company: 'JobTarget', place: 'Cebu, PH', note: 'Spidering and ETL redesign, ELK infrastructure, and ATS data integrations.' },
-  { period: '2012', role: 'Systems Engineer', company: 'DirectAccess Corporation', place: 'Cebu, PH', note: 'Network continuity, BPO software support, internal tools, and on-site infrastructure.' },
-  { period: '2011 — 2012', role: 'Software Development Intern', company: 'Asian College of Technology', place: 'Cebu, PH', note: 'Grading, enrollment, school website, and finance administration systems.' },
-  { period: '2010 — 2012', role: 'Lead PHP/WordPress Developer · Freelance', company: 'Cyberknights Solutions Inc.', place: 'Cebu, PH', note: 'PSD-to-WordPress builds and leadership of a three-person CRM development team.' },
+const sections = ['Overview', 'Experience', 'Projects', 'Technology', 'Contact'] as const;
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+const technologies = {
+  csharp: 'C#', dotnetcore: '.NET Core', angular: 'Angular', react: 'React',
+  microsoftsqlserver: 'Microsoft SQL Server', claude: 'Claude Code', openai: 'ChatGPT',
+  azure: 'Microsoft Azure', docker: 'Docker', typescript: 'TypeScript',
+  javascript: 'JavaScript', nodejs: 'Node.js', python: 'Python', php: 'PHP',
+  git: 'Git', azuredevops: 'Azure DevOps', html5: 'HTML5', css3: 'CSS3',
+  django: 'Django', nextjs: 'Next.js', powershell: 'PowerShell',
+};
+type Tech = keyof typeof technologies;
+const core: Tech[] = ['csharp', 'dotnetcore', 'angular', 'react', 'microsoftsqlserver', 'claude', 'openai', 'azure', 'docker'];
+const stacks: { title: string; description: string; icons: Tech[] }[] = [
+  { title: 'Product development', description: 'Web interfaces, APIs, and full-stack applications.', icons: ['csharp', 'dotnetcore', 'angular', 'react', 'typescript', 'javascript', 'html5', 'css3', 'nextjs'] },
+  { title: 'Backend & data', description: 'Business logic, integrations, and reliable data systems.', icons: ['microsoftsqlserver', 'nodejs', 'python', 'django', 'php', 'dotnetcore'] },
+  { title: 'Cloud & delivery', description: 'Cloud infrastructure, containers, and automated releases.', icons: ['azure', 'docker', 'azuredevops', 'git', 'powershell'] },
+  { title: 'AI-assisted development', description: 'Claude Code and ChatGPT in the development workflow; Azure AI for product integrations.', icons: ['claude', 'openai', 'azure'] },
+];
+const projectTech: Tech[][] = [
+  ['angular','dotnetcore','azure','microsoftsqlserver'], ['azure','openai'],
+  ['dotnetcore','microsoftsqlserver'], ['python','nodejs','php'], ['dotnetcore','docker','microsoftsqlserver'],
+  ['angular','typescript'], ['git'], [], ['microsoftsqlserver'],
+  ['microsoftsqlserver'], [],
 ];
 
-const skillGroups = [
-  { title: 'Product engineering', icon: Code2, skills: ['C# / .NET Core', 'ASP.NET MVC', 'Angular', 'JavaScript / TypeScript', 'Node.js / Next.js', 'PHP', 'Python / Django', 'HTML / CSS'] },
-  { title: 'Architecture & data', icon: Cpu, skills: ['Microservices', 'Monolithic systems', 'Entity Framework', 'Dapper', 'SQL', 'Azure Cosmos DB', 'Unit testing'] },
-  { title: 'Cloud & delivery', icon: Rocket, skills: ['Microsoft Azure', 'Azure DevOps / Pipelines', 'Docker', 'CI/CD', 'TeamCity / Octopus', 'PowerShell / Bash', 'Git / SVN'] },
-  { title: 'Intelligence & practice', icon: Bot, skills: ['Azure AI / Bot', 'Power BI', 'Agile Scrum', 'Jira', 'Technical leadership'] },
-];
-
-const publicBase = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-
-function ProjectGrid({ items }: { items: readonly (typeof projects)[number][] }) {
-  return (
-    <div className="project-grid">
-      {items.map((project) => {
-        const Icon = project.icon;
-        return (
-          <article className="project-card" key={project.number}>
-            <div className="project-head"><span>{project.number}</span><Icon size={24} strokeWidth={1.6} /></div>
-            <h3>{project.title}</h3>
-            <p>{project.summary}</p>
-            <div className="project-result"><Check size={15} /> {project.result}</div>
-            <div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-          </article>
-        );
-      })}
-    </div>
-  );
+function TechIcon({ name }: { name: Tech }) {
+  const [show, setShow] = useState(false);
+  return <button className="tech-icon" type="button" aria-label={technologies[name]} aria-pressed={show}
+    onClick={() => setShow(!show)} onBlur={() => setShow(false)}>
+    <img src={base + '/tech/' + name + '.svg'} alt="" width="30" height="30" draggable={false} />
+    <span className={show ? 'icon-label shown' : 'icon-label'}>{technologies[name]}</span>
+  </button>;
+}
+function TechIcons({ names }: { names: readonly Tech[] }) {
+  return <div className="icon-row">{names.map(name => <TechIcon name={name} key={name} />)}</div>;
+}
+function Pager({ index, total, onChange, label }: { index: number; total: number; onChange: (value: number) => void; label: string }) {
+  return <div className="pager" aria-label={label + ' navigation'}>
+    <button type="button" onClick={() => onChange(index - 1)} disabled={index === 0} aria-label={'Previous ' + label}><ArrowLeft size={18} /></button>
+    <span aria-live="polite">{String(index + 1).padStart(2, '0')} <i>/ {String(total).padStart(2, '0')}</i></span>
+    <button type="button" onClick={() => onChange(index + 1)} disabled={index === total - 1} aria-label={'Next ' + label}><ArrowRight size={18} /></button>
+  </div>;
 }
 
 export default function Home() {
+  const [active, setActive] = useState(0);
   const [dark, setDark] = useState(false);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [projectIndex, setProjectIndex] = useState(0);
+  const [category, setCategory] = useState('all');
+  const [stackIndex, setStackIndex] = useState(0);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef(0);
+  const lock = useRef(0);
+  const wheel = useRef({ total: 0, last: 0 });
+  const touch = useRef<{ x: number; y: number } | null>(null);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('theme');
-    const preferred = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDark(preferred);
-    document.documentElement.classList.toggle('dark', preferred);
+  const navigate = useCallback((value: number) => {
+    const next = Math.max(0, Math.min(sections.length - 1, value));
+    if (next === activeRef.current) return;
+    activeRef.current = next;
+    lock.current = Date.now() + 800;
+    setActive(next);
+    history.replaceState(null, '', '#' + sections[next].toLowerCase());
+    panelRef.current?.scrollTo({ top: 0 });
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && panelRef.current?.contains(focused)) focused.blur();
   }, []);
 
-  function toggleTheme() {
-    const next = !dark;
-    setDark(next);
+  useEffect(() => {
+    let preferred = false;
+    try { preferred = localStorage.getItem('theme') === 'dark'; } catch { /* Storage is optional. */ }
+    document.documentElement.classList.toggle('dark', preferred);
+    setDark(preferred);
+    const restore = () => {
+      const index = sections.findIndex(section => '#' + section.toLowerCase() === location.hash);
+      if (index >= 0) { activeRef.current = index; setActive(index); }
+    };
+    restore();
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || (event.target as HTMLElement).closest('select, input, textarea') || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      const panel = panelRef.current;
+      // On small screens and enlarged text, let an overflowing panel remain readable.
+      if (panel && panel.scrollHeight > panel.clientHeight + 2 && panel.contains(event.target as Node)) {
+        const canScroll = event.deltaY > 0 ? panel.scrollTop + panel.clientHeight < panel.scrollHeight - 2 : panel.scrollTop > 2;
+        if (canScroll) return;
+      }
+      event.preventDefault();
+      const now = Date.now();
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 600 : 1);
+      const gesture = consumeWheel(wheel.current, delta, now, lock.current);
+      wheel.current = { total: gesture.total, last: gesture.last };
+      lock.current = gesture.lockedUntil;
+      if (gesture.direction) navigate(activeRef.current + gesture.direction);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.closest('input, select, textarea, button, a, [role="tab"], [contenteditable]')) return;
+      if (['ArrowDown', 'PageDown', 'ArrowUp', 'PageUp', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault();
+        if (event.key === 'Home') navigate(0);
+        else if (event.key === 'End') navigate(sections.length - 1);
+        else navigate(activeRef.current + (['ArrowDown', 'PageDown'].includes(event.key) ? 1 : -1));
+      }
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('hashchange', restore);
+    return () => {
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('hashchange', restore);
+    };
+  }, [navigate]);
+
+  const filtered = projects.filter(project => category === 'all' || project.category === category);
+  const project = filtered[projectIndex] ?? filtered[0];
+  const role = roles[roleIndex];
+  const changeProjectCategory = (value: string) => { setCategory(value); setProjectIndex(0); };
+  const toggleTheme = () => {
+    const next = !dark; setDark(next);
     document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('theme', next ? 'dark' : 'light');
-  }
+    try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch { /* Theme still works without storage. */ }
+  };
 
-  return (
-    <main className="site-shell">
-      <nav className="portfolio-nav" aria-label="Primary navigation">
-        <a href="#top" className="brand" aria-label="Victor Paul Noel, home">VP<span>N</span></a>
-        <div className="nav-links"><a href="#work">Work</a><a href="#experience">Experience</a><a href="#skills">Skills</a></div>
-        <button className="bulb-switch" onClick={toggleTheme} aria-label={`Switch to ${dark ? 'light' : 'dark'} mode`} aria-pressed={dark}>
-          <span className="bulb-glow" /><Lightbulb size={21} strokeWidth={1.8} /><span className="switch-tip">{dark ? 'Light' : 'Dark'}</span>
-        </button>
-      </nav>
-
-      <section id="top" className="hero-section">
-        <div className="eyebrow"><span /> Cebu City · Available worldwide</div>
-        <h1>Engineering systems<br />that move <em>business.</em></h1>
-        <p className="hero-copy">I&apos;m Victor, a software architect and senior engineer turning complex workflows and legacy systems into secure, scalable products.</p>
-        <div className="hero-actions">
-          <a className="primary-action" href="mailto:dev.vpauln@gmail.com"><Mail size={18} /> Start a conversation</a>
-          <a className="text-action" href="#work">Explore my work <ArrowDown size={17} /></a>
-        </div>
-        <div className="impact-strip" aria-label="Career highlights">
-          <div><strong>15+</strong><span>years building software</span></div>
-          <div><strong>75%</strong><span>less manual paperwork</span></div>
-          <div><strong>35%</strong><span>lower infrastructure cost</span></div>
-          <a href="https://www.linkedin.com/in/vpnoel/" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={16} /></a>
-        </div>
-      </section>
-
-      <section id="work" className="section-wrap work-section">
-        <div className="section-intro">
-          <div><span className="section-index">01</span><p className="section-kicker">Selected work</p></div>
-          <h2>Useful systems.<br /><em>Measurable change.</em></h2>
-          <p>I work where product thinking, architecture, and delivery meet—often modernizing the systems businesses rely on most.</p>
-        </div>
-        <Tabs defaultValue="all" className="project-tabs">
-          <TabsList variant="line" aria-label="Project categories">
-            <TabsTrigger value="all">All projects</TabsTrigger>
-            <TabsTrigger value="modernization">Modernization</TabsTrigger>
-            <TabsTrigger value="intelligence">AI & automation</TabsTrigger>
-            <TabsTrigger value="platforms">Platforms</TabsTrigger>
-          </TabsList>
-          <TabsContent value="all"><ProjectGrid items={projects} /></TabsContent>
-          <TabsContent value="modernization"><ProjectGrid items={projects.filter((project) => project.category === 'modernization')} /></TabsContent>
-          <TabsContent value="intelligence"><ProjectGrid items={projects.filter((project) => project.category === 'intelligence')} /></TabsContent>
-          <TabsContent value="platforms"><ProjectGrid items={projects.filter((project) => project.category === 'platforms')} /></TabsContent>
-        </Tabs>
-      </section>
-
-      <section className="belief-section" aria-label="Engineering philosophy">
-        <div className="belief-icon"><BriefcaseBusiness size={30} strokeWidth={1.4} /></div>
-        <blockquote>“Good engineering makes complexity <em>feel simple</em>—for the people using it and the teams maintaining it.”</blockquote>
-        <div className="belief-notes"><span>Business aligned</span><span>Secure by design</span><span>Built to evolve</span></div>
-      </section>
-
-      <section id="experience" className="section-wrap experience-section">
-        <div className="section-intro experience-intro">
-          <div><span className="section-index">02</span><p className="section-kicker">Experience</p></div>
-          <h2>A career built<br />across <em>the stack.</em></h2>
-          <p>Recent roles across consulting, product delivery, modernization, and platform engineering—with every location kept close to the work it belongs to.</p>
-        </div>
-        <div className="timeline">
-          {roles.slice(0, 6).map((item, index) => (
-            <article className="timeline-item" key={`${item.company}-${item.period}`}>
-              <span className="timeline-number">{String(index + 1).padStart(2, '0')}</span>
-              <div className="timeline-body">
-                <div className="role-meta"><p className="timeline-period">{item.period}</p><p className="place"><MapPin size={14} /> {item.place}</p></div>
-                <h3>{item.role}</h3>
-                <p className="company">{item.company}</p>
-                <p className="role-note">{item.note}</p>
-              </div>
-            </article>
-          ))}
-          <details className="earlier-career">
-            <summary>Earlier career · 2010—2016 <ChevronDown size={18} /></summary>
-            <div>
-              {roles.slice(6).map((item) => (
-                <article className="early-role" key={`${item.company}-${item.period}`}>
-                  <p className="timeline-period">{item.period}</p>
-                  <div><h3>{item.role}</h3><p className="company">{item.company} · {item.place}</p><p className="role-note">{item.note}</p></div>
-                </article>
-              ))}
-            </div>
-          </details>
-          <aside className="peer-signal">
-            <Quote size={25} strokeWidth={1.4} />
-            <p>Peer recommendations consistently highlight fast learning, calm problem-solving, and an ability to guide legacy platforms into modern stacks.</p>
-            <a href="https://www.linkedin.com/in/vpnoel/details/recommendations/" target="_blank" rel="noreferrer">Read public recommendations <ArrowUpRight size={15} /></a>
+  return <main className="portfolio">
+    <header className="masthead">
+      <button className="identity" onClick={() => navigate(0)} aria-label="Victor Paul Noel, overview"><span className="monogram">vn<span>.</span></span><span className="identity-name">VICTOR PAUL NOEL<small>Software engineering</small></span></button>
+      <div className="header-actions"><a className="resume-link" href={base + '/Victor-Paul-Noel-CV.pdf'} download><Download size={16} /><span>Résumé</span></a><button className="bulb" onClick={toggleTheme} aria-label={'Switch to ' + (dark ? 'light' : 'dark') + ' mode'} aria-pressed={dark}><Lightbulb size={20} /></button></div>
+    </header>
+    <Tabs value={sections[active]} onValueChange={value => navigate(sections.indexOf(value as typeof sections[number]))} className="workspace">
+      <TabsList className="section-nav" variant="line" aria-label="Portfolio sections">
+        {sections.map((section, index) => <TabsTrigger value={section} key={section}><span className="nav-number">0{index + 1}</span>{section}</TabsTrigger>)}
+      </TabsList>
+      <div className="panel-viewport" ref={panelRef}
+        onTouchStart={event => { touch.current = { x: event.touches[0].clientX, y: event.touches[0].clientY }; }}
+        onTouchEnd={event => {
+          if (!touch.current) return;
+          const dx = event.changedTouches[0].clientX - touch.current.x;
+          const dy = event.changedTouches[0].clientY - touch.current.y;
+          touch.current = null;
+          const panel = panelRef.current;
+          if (panel && panel.scrollHeight > panel.clientHeight + 2) return;
+          if (Math.abs(dy) > 75 && Math.abs(dy) > Math.abs(dx) * 1.5) navigate(activeRef.current + (dy < 0 ? 1 : -1));
+        }}>
+        <TabsContent value="Overview" className="view overview">
+          <div className="intro">
+            <p className="eyebrow"><span className="status-dot" /> SENIOR SOFTWARE ENGINEER</p>
+            <h1>Victor Paul<br /><span>Noel.</span></h1>
+            <p className="intro-summary">I build reliable software<br className="desktop-break" /> that makes business simpler.</p>
+            <p className="location"><MapPin size={15} /> Cebu City, Philippines</p>
+            <div className="actions"><a className="primary" href="mailto:dev.vpauln@gmail.com">Let's talk <ArrowUpRight size={18} /></a><button className="text-button" onClick={() => navigate(2)}>View projects <ArrowRight size={17} /></button></div>
+          </div>
+          <aside className="quick-profile">
+            <p className="eyebrow">AT A GLANCE</p>
+            <h2>Full-stack depth.<br />Business perspective.</h2>
+            <p>From modern web applications to legacy systems, I connect architecture, development, and delivery.</p>
+            <div className="profile-facts"><div><span>Focus</span><strong>Enterprise applications & modernization</strong></div><div><span>Experience</span><strong>Engineering, finance, education & operations</strong></div><div><span>Approach</span><strong>Secure systems. Clear communication.</strong></div></div>
+            <div className="metrics"><div><strong>15+</strong><span>years in software</span></div><div><strong>75%</strong><span>less manual paperwork</span></div><div><strong>35%</strong><span>lower infrastructure cost</span></div></div>
           </aside>
-        </div>
-      </section>
-
-      <section id="skills" className="section-wrap skills-section">
-        <div className="section-intro compact">
-          <div><span className="section-index">03</span><p className="section-kicker">Capabilities</p></div>
-          <h2>Depth where it<br /><em>matters most.</em></h2>
-          <p>Hands-on engineering experience from interface details to cloud operations, with architecture and team delivery tying it together.</p>
-        </div>
-        <div className="skills-grid">
-          {skillGroups.map((group, index) => {
-            const Icon = group.icon;
-            return <article className="skill-card" key={group.title}><div className="skill-title"><span>0{index + 1}</span><Icon size={22} strokeWidth={1.5} /></div><h3>{group.title}</h3><ul>{group.skills.map((skill) => <li key={skill}>{skill}</li>)}</ul></article>;
-          })}
-        </div>
-        <div className="credentials" aria-label="Education and credentials">
-          <article><GraduationCap size={24} strokeWidth={1.5} /><div><span>Education</span><h3>Bachelor&apos;s degree, Information Technology</h3><p>Asian College of Technology · 2008—2012</p></div></article>
-          <article><GraduationCap size={24} strokeWidth={1.5} /><div><span>Foundation</span><h3>Information Technology studies</h3><p>University of San Jose-Recoletos · 2008—2009</p></div></article>
-          <article><ShieldCheck size={24} strokeWidth={1.5} /><div><span>Selected credentials</span><h3>Maintainable automated testing · xUnit.net 2</h3><p>Pluralsight · Issued September 2022</p></div></article>
-        </div>
-      </section>
-
-      <section className="cta-section">
-        <div className="cta-orbit"><Lightbulb size={48} strokeWidth={1.3} /><span /></div>
-        <p className="section-kicker">Have a difficult system to build or modernize?</p>
-        <h2>Let&apos;s turn it into<br /><em>something clear.</em></h2>
-        <div className="cta-actions">
-          <a className="primary-action inverted" href="mailto:dev.vpauln@gmail.com"><Mail size={18} /> dev.vpauln@gmail.com</a>
-          <a className="secondary-action" href={`${publicBase}/Victor-Paul-Noel-CV.pdf`} download><Download size={18} /> Download résumé</a>
-        </div>
-        <div className="contact-line"><a href="tel:+639682044710"><Phone size={15} /> +63 968 204 4710</a><a href="https://www.linkedin.com/in/vpnoel/" target="_blank" rel="noreferrer"><ExternalLink size={15} /> linkedin.com/in/vpnoel</a></div>
-      </section>
-
-      <footer><p>© {new Date().getFullYear()} Victor Paul Noel</p><p>Senior Software Engineer · Full-Stack Developer</p><a href="#top">Back to top ↑</a></footer>
-    </main>
-  );
+        </TabsContent>
+        <TabsContent value="Experience" className="view">
+          <div className="view-heading"><div><p className="eyebrow">CAREER</p><h2>Experience that delivers.</h2></div><Pager index={roleIndex} total={roles.length} onChange={setRoleIndex} label="role" /></div>
+          <div className="detail-layout">
+            <div className="record-menu">
+              <label className="mobile-selector">Choose a role<select value={roleIndex} onChange={e => setRoleIndex(Number(e.target.value))}>{roles.map((item, index) => <option value={index} key={item.company}>{item.company} · {item.period}</option>)}</select></label>
+              <div className="record-buttons">{roles.slice(Math.floor(roleIndex / 4) * 4, Math.floor(roleIndex / 4) * 4 + 4).map((item, index) => {
+                const value = Math.floor(roleIndex / 4) * 4 + index;
+                return <button key={item.company} className={roleIndex === value ? 'record selected' : 'record'} aria-pressed={roleIndex === value} onClick={() => setRoleIndex(value)}><span><strong>{item.company}</strong><small>{item.period}</small></span><ChevronRight size={17} /></button>;
+              })}</div>
+              <a className="subtle-link" href={base + '/Victor-Paul-Noel-CV.pdf'} download>Full career in the résumé <Download size={15} /></a>
+            </div>
+            <article className="detail-card" key={roleIndex}>
+              <div className="detail-meta"><span>{role.period}</span><span><MapPin size={14} />{role.place}</span></div>
+              <h3>{role.role}</h3><p className="company">{role.company}</p><p className="detail-description">{role.note}</p>
+              <div className="detail-bottom"><span className="eyebrow">DELIVERY FOCUS</span><p>Application development · Collaboration · Reliable delivery</p></div>
+            </article>
+          </div>
+        </TabsContent>
+        <TabsContent value="Projects" className="view">
+          <div className="view-heading"><div><p className="eyebrow">SELECTED WORK / 11 PROJECTS</p><h2>Real systems. Real impact.</h2></div><Pager index={projectIndex} total={filtered.length} onChange={setProjectIndex} label="project" /></div>
+          <div className="filters" aria-label="Project categories">{[['all','All projects'],['modernization','Modernization'],['intelligence','AI & automation'],['platforms','Platforms']].map(([value,label]) => <button key={value} aria-pressed={category === value} onClick={() => changeProjectCategory(value)}>{label}</button>)}</div>
+          <div className="detail-layout project-layout">
+            <div className="record-menu"><label className="mobile-selector">Choose a project<select value={projectIndex} onChange={e => setProjectIndex(Number(e.target.value))}>{filtered.map((item,index) => <option value={index} key={item.number}>{item.title}</option>)}</select></label>
+              <div className="record-buttons">{filtered.slice(Math.floor(projectIndex / 4) * 4, Math.floor(projectIndex / 4) * 4 + 4).map((item,index) => {
+                const value = Math.floor(projectIndex / 4) * 4 + index;
+                return <button key={item.number} className={projectIndex === value ? 'record selected' : 'record'} aria-pressed={projectIndex === value} onClick={() => setProjectIndex(value)}><span><small>PROJECT {item.number}</small><strong>{item.title}</strong></span><ChevronRight size={17} /></button>;
+              })}</div>
+            </div>
+            <article className="detail-card project-detail" key={project.number}><span className="eyebrow">PROJECT {project.number}</span><h3>{project.title}</h3><p className="detail-description">{project.summary}</p><p className="result"><Check size={18} />{project.result}</p><div className="detail-bottom"><span className="eyebrow">{projectTech[Number(project.number) - 1].length ? 'TECHNOLOGIES' : 'PROJECT FOCUS'}</span>{projectTech[Number(project.number) - 1].length ? <TechIcons names={projectTech[Number(project.number) - 1]} /> : <p>{project.tags.join(' · ')}</p>}</div></article>
+          </div>
+        </TabsContent>
+        <TabsContent value="Technology" className="view">
+          <div className="view-heading"><div><p className="eyebrow">THE TOOLKIT</p><h2>Built with the right tools.</h2></div><Pager index={stackIndex} total={stacks.length} onChange={setStackIndex} label="technology group" /></div>
+          <div className="detail-layout"><div className="record-menu"><div className="stack-buttons">{stacks.map((stack,index) => <button className={stackIndex === index ? 'record selected' : 'record'} key={stack.title} onClick={() => setStackIndex(index)} aria-pressed={stackIndex === index}><strong>{stack.title}</strong><ChevronRight size={17} /></button>)}</div></div>
+            <article className="detail-card stack-detail" key={stackIndex}><p className="eyebrow">0{stackIndex + 1} / EXPERTISE</p><h3>{stacks[stackIndex].title}</h3><p className="detail-description">{stacks[stackIndex].description}</p><div className="large-icons"><TechIcons names={stacks[stackIndex].icons} /></div><p className="icon-hint">Hover or tap an icon to see the technology.</p></article>
+          </div>
+        </TabsContent>
+        <TabsContent value="Contact" className="view contact-view">
+          <div><p className="eyebrow">LET'S CONNECT</p><h2>Good work starts<br />with a conversation<span>.</span></h2><p className="intro-summary">Have a role, a project, or a system<br className="desktop-break" /> that needs a fresh perspective?</p><a className="primary" href="mailto:dev.vpauln@gmail.com">Email Victor <ArrowUpRight size={18} /></a></div>
+          <aside className="contact-card"><a href="mailto:dev.vpauln@gmail.com"><Mail size={21} /><span><small>Email</small>dev.vpauln@gmail.com</span><ArrowUpRight size={18} /></a><a href="https://www.linkedin.com/in/vpnoel/" target="_blank" rel="noreferrer"><ArrowUpRight size={21} /><span><small>LinkedIn</small>linkedin.com/in/vpnoel</span><ArrowUpRight size={18} /></a><a href="tel:+639682044710"><Phone size={21} /><span><small>Phone</small>+63 968 204 4710</span><ArrowUpRight size={18} /></a><a href={base + '/Victor-Paul-Noel-CV.pdf'} download><Download size={21} /><span><small>Experience & qualifications</small>Download résumé</span><ArrowDown size={18} /></a></aside>
+        </TabsContent>
+      </div>
+    </Tabs>
+    <div className="technology-dock"><div className="dock-caption"><span className="eyebrow">CORE TECHNOLOGIES</span><span>Tools I work with</span></div><TechIcons names={core} /><button className="toolkit-link" onClick={() => navigate(3)} aria-label="View all technologies"><ArrowUpRight size={19} /></button></div>
+    <footer className="footer"><span className="section-status" aria-live="polite">0{active + 1} <i>/ 05</i><span>{sections[active]}</span></span><span className="scroll-hint">Scroll to explore <ArrowDown size={14} /></span><div className="section-arrows"><button disabled={active === 0} onClick={() => navigate(active - 1)} aria-label="Previous section"><ArrowLeft size={18} /></button><button disabled={active === 4} onClick={() => navigate(active + 1)} aria-label="Next section"><ArrowRight size={18} /></button></div></footer>
+  </main>;
 }
-

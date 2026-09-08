@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - '.nojekyll'
       - 'assets/**'
+      - 'tech/**'
       - 'favicon.svg'
       - 'index.html'
       - 'og.png'
@@ -40,6 +41,8 @@ jobs:
         run: |
           rm -rf assets
           cp -R dist/github/assets assets
+          mkdir -p tech
+          cp -R dist/github/tech/. tech/
           cp dist/github/.nojekyll .nojekyll
           cp dist/github/favicon.svg favicon.svg
           cp dist/github/index.html index.html
@@ -47,11 +50,10 @@ jobs:
           cp dist/github/Victor-Paul-Noel-CV.pdf Victor-Paul-Noel-CV.pdf
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .nojekyll assets favicon.svg index.html og.png Victor-Paul-Noel-CV.pdf
+          git add .nojekyll assets tech favicon.svg index.html og.png Victor-Paul-Noel-CV.pdf
           if git diff --cached --quiet; then
             echo "Published files are already current."
           else
             git commit -m "Update published portfolio"
             git push
           fi
-
