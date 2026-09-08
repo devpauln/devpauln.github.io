@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Download, Lightbulb, Mail, MapPin, Phone, Check, ChevronRight } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { projects, roles } from './content';
+import { projects, projectStories, roles } from './content';
 import { consumeWheel } from '@/lib/wheel-navigation.mjs';
 
 const sections = ['Overview', 'Experience', 'Projects', 'Technology', 'Contact'] as const;
@@ -104,6 +104,9 @@ export default function Home() {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
       if (target.closest('input, select, textarea, button, a, [role="tab"], [contenteditable]')) return;
+      const panel = panelRef.current;
+      // A focused, overflowing case study must retain native keyboard scrolling.
+      if (panel?.contains(target) && panel.scrollHeight > panel.clientHeight + 2) return;
       if (['ArrowDown', 'PageDown', 'ArrowUp', 'PageUp', 'Home', 'End'].includes(event.key)) {
         event.preventDefault();
         if (event.key === 'Home') navigate(0);
@@ -123,6 +126,7 @@ export default function Home() {
 
   const filtered = projects.filter(project => category === 'all' || project.category === category);
   const project = filtered[projectIndex] ?? filtered[0];
+  const story = projectStories[project.number];
   const role = roles[roleIndex];
   const changeProjectCategory = (value: string) => { setCategory(value); setProjectIndex(0); };
   const toggleTheme = () => {
@@ -140,7 +144,7 @@ export default function Home() {
       <TabsList className="section-nav" variant="line" aria-label="Portfolio sections">
         {sections.map((section, index) => <TabsTrigger value={section} key={section}><span className="nav-number">0{index + 1}</span>{section}</TabsTrigger>)}
       </TabsList>
-      <div className="panel-viewport" ref={panelRef}
+      <div className="panel-viewport" ref={panelRef} tabIndex={0} aria-label={sections[active] + ' content'}
         onTouchStart={event => { touch.current = { x: event.touches[0].clientX, y: event.touches[0].clientY }; }}
         onTouchEnd={event => {
           if (!touch.current) return;
@@ -186,16 +190,28 @@ export default function Home() {
           </div>
         </TabsContent>
         <TabsContent value="Projects" className="view">
-          <div className="view-heading"><div><p className="eyebrow">SELECTED WORK / 11 PROJECTS</p><h2>Real systems. Real impact.</h2></div><Pager index={projectIndex} total={filtered.length} onChange={setProjectIndex} label="project" /></div>
+          <div className="view-heading"><div><p className="eyebrow">SELECTED WORK / 11 PROJECTS</p><h2>Projects & contributions.</h2></div><Pager index={projectIndex} total={filtered.length} onChange={setProjectIndex} label="project" /></div>
           <div className="filters" aria-label="Project categories">{[['all','All projects'],['modernization','Modernization'],['intelligence','AI & automation'],['platforms','Platforms']].map(([value,label]) => <button key={value} aria-pressed={category === value} onClick={() => changeProjectCategory(value)}>{label}</button>)}</div>
           <div className="detail-layout project-layout">
             <div className="record-menu"><label className="mobile-selector">Choose a project<select value={projectIndex} onChange={e => setProjectIndex(Number(e.target.value))}>{filtered.map((item,index) => <option value={index} key={item.number}>{item.title}</option>)}</select></label>
-              <div className="record-buttons">{filtered.slice(Math.floor(projectIndex / 4) * 4, Math.floor(projectIndex / 4) * 4 + 4).map((item,index) => {
-                const value = Math.floor(projectIndex / 4) * 4 + index;
-                return <button key={item.number} className={projectIndex === value ? 'record selected' : 'record'} aria-pressed={projectIndex === value} onClick={() => setProjectIndex(value)}><span><small>PROJECT {item.number}</small><strong>{item.title}</strong></span><ChevronRight size={17} /></button>;
-              })}</div>
+              <div className="record-buttons">{filtered.slice(Math.floor(projectIndex / 6) * 6, Math.floor(projectIndex / 6) * 6 + 6).map((item,index) => {
+                const value = Math.floor(projectIndex / 6) * 6 + index;
+                return <button key={item.number} className={projectIndex === value ? 'record selected' : 'record'} aria-pressed={projectIndex === value} onClick={() => setProjectIndex(value)}><span className="project-number">{item.number}</span><span><strong>{item.title}</strong><small>{projectStories[item.number].audience}</small></span><ChevronRight size={17} /></button>;
+              })}{filtered.length > 6 && <div className="directory-pages" aria-label="Project directory pages">{Array.from({ length: Math.ceil(filtered.length / 6) }, (_, page) => <button key={page} aria-pressed={Math.floor(projectIndex / 6) === page} onClick={() => setProjectIndex(page * 6)}>Projects {page * 6 + 1}–{Math.min((page + 1) * 6, filtered.length)}</button>)}</div>}</div>
             </div>
-            <article className="detail-card project-detail" key={project.number}><span className="eyebrow">PROJECT {project.number}</span><h3>{project.title}</h3><p className="detail-description">{project.summary}</p><p className="result"><Check size={18} />{project.result}</p><div className="detail-bottom"><span className="eyebrow">{projectTech[Number(project.number) - 1].length ? 'TECHNOLOGIES' : 'PROJECT FOCUS'}</span>{projectTech[Number(project.number) - 1].length ? <TechIcons names={projectTech[Number(project.number) - 1]} /> : <p>{project.tags.join(' · ')}</p>}</div></article>
+            <article className="detail-card project-detail" key={project.number} aria-labelledby={'project-' + project.number}>
+              <p className="eyebrow">PROJECT {project.number}<span className="project-audience">{story.audience}</span></p>
+              <h3 id={'project-' + project.number}>{project.title}</h3>
+              <p className="detail-description">{story.overview}</p>
+              <div className="case-study-body">
+                <section><h4>My contribution</h4><p>{story.contribution}</p></section>
+                <section><h4>What the system does</h4><ul>{story.capabilities.map(capability => <li key={capability}><Check size={15} aria-hidden="true" /><span>{capability}</span></li>)}</ul></section>
+              </div>
+              <div className="case-study-footer">
+                <section className="project-value"><h4>{story.measured ? 'Measured outcome' : 'Business value'}</h4><p>{story.value}</p></section>
+                <section className="project-stack"><h4>{projectTech[Number(project.number) - 1].length ? 'Technologies' : 'Project focus'}</h4>{projectTech[Number(project.number) - 1].length ? <TechIcons names={projectTech[Number(project.number) - 1]} /> : <p>{project.tags.join(' · ')}</p>}</section>
+              </div>
+            </article>
           </div>
         </TabsContent>
         <TabsContent value="Technology" className="view">

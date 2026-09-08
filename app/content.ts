@@ -29,10 +29,103 @@ import {
 
 
 
+// Expanded from the résumé's project descriptions and associated employment entries.
+// Only explicitly attributable achievements are presented as measured results.
+export const projectStories = {
+  '01': {
+    audience: 'Structural engineering teams',
+    overview: 'A modernization of legacy structural engineering software, bringing time tracking, reporting, and everyday engineering workflows into a connected application. The project focused on reducing manual administration while making operational information easier to use.',
+    contribution: 'Rebuilt the application with Angular and C# .NET Core, refreshed the interface with Angular Material, and worked on SQL queries, database structure, and audit fields to support data integrity.',
+    capabilities: ['Time tracking and automated workflows', 'Power BI reporting and SharePoint integration', 'Modern web interface backed by structured SQL data'],
+    value: 'Reduced manual paperwork by 75%, giving engineering teams more time to focus on their core work.',
+    measured: true,
+  },
+  '02': {
+    audience: 'Employees using Microsoft Teams',
+    overview: 'A workplace assistant inside Microsoft Teams for time tracking, automatic scheduling, and organization lookups. It brings these everyday tasks into the collaboration tool employees already use, with conversational requests as the entry point.',
+    contribution: 'Integrated Microsoft Teams with Azure Bot, OpenAI, and LUIS, and handled Azure resource configuration and deployment to connect the assistant with its supporting services.',
+    capabilities: ['Conversational access through Microsoft Teams', 'Time tracking and automatic scheduling', 'Organization information lookups'],
+    value: 'Brings administrative assistance into daily conversations, reducing the need to move between separate tools for routine requests.',
+    measured: false,
+  },
+  '03': {
+    audience: 'Language screening and learning teams',
+    overview: 'A platform for language screening, learning and development, and certification. Speech-to-text scoring supports assessments aligned with international standards, connecting language evaluation with a broader learning experience.',
+    contribution: 'Helped take the product from its initial idea to completion and worked on its transition from PHP to C# and the Microsoft stack. The work combined product development with modernization of an existing codebase.',
+    capabilities: ['Language screening and assessment', 'Speech-to-text scoring against assessment standards', 'Learning, development, and certification'],
+    value: 'Connects assessment and learning in one product, supporting both initial language screening and continued development.',
+    measured: false,
+  },
+  '04': {
+    audience: 'Job aggregation and recruitment operations',
+    overview: 'A redesign of a legacy Python web spider that collected job listings from applicant tracking systems and job sites. The replacement used an extract, transform, and load (ETL) approach to improve the accuracy and completeness of collected job data.',
+    contribution: 'Reworked the collection implementation using Node.js and PHP, developed scripts for customer ATS requirements, and collaborated with business teams on the data needed from each source.',
+    capabilities: ['Job collection across ATS and job websites', 'ETL-based processing of source data', 'Customer-specific collection scripts'],
+    value: 'Improved collection accuracy by 75% and achieved 100% detail capture, as reported in the project achievements.',
+    measured: true,
+  },
+  '05': {
+    audience: 'Credit and financial reporting teams',
+    overview: 'A data retention system supporting financial statements and credit reporting, where data integrity is central to the work. Microservices and Power BI integration connected application data with the reporting needs of finance teams.',
+    contribution: 'Developed the financial data retention module, helped pioneer a microservice implementation using Docker and OpenShift, and introduced unit and functional testing alongside cross-functional delivery work.',
+    capabilities: ['Financial data retention and integrity', 'Microservice-based implementation', 'Power BI integration and automated tests'],
+    value: 'The testing work reduced post-deployment bugs by 30%, strengthening confidence in financial application releases.',
+    measured: true,
+  },
+  '06': {
+    audience: 'Teams managing multiple social platforms',
+    overview: 'A centralized application for scheduling and managing activity across multiple social media platforms. Its purpose is to give teams one place to coordinate their social presence instead of treating every platform as a separate operational task.',
+    contribution: 'Developed the social media management workspace, bringing scheduling and cross-platform control together as part of the application.',
+    capabilities: ['Scheduling of social media activity', 'Management across multiple platforms', 'Central workspace for operational control'],
+    value: 'Gives social media teams a shared point of control for coordinating platform activity and keeping scheduling work organized.',
+    measured: false,
+  },
+  '07': {
+    audience: 'European publishing and author-management teams',
+    overview: 'An enhancement of a European book publishing and author-management platform. The work covered both the application and the engineering workflow used to maintain it, including the move away from FTP-based code transfers.',
+    contribution: 'Led a team of three engineers on platform enhancements and moved the delivery workflow from FTP to Git, introducing version-controlled collaboration for ongoing development.',
+    capabilities: ['Publishing and author-management support', 'Enhancements to an existing business platform', 'Git-based collaboration for a three-person team'],
+    value: 'Made application changes traceable through version control and gave the development team a shared workflow for maintaining the platform.',
+    measured: false,
+  },
+  '08': {
+    audience: 'IT infrastructure and support teams',
+    overview: 'An internal support tool combining dashboard reports with deployment automation for IT infrastructure operations. It brings operational reporting and repeatable deployment tasks into the support workflow.',
+    contribution: 'Built infrastructure support tooling as part of DevOps work, including dashboard reporting and automation for deployment activities. Related infrastructure work included the ELK stack.',
+    capabilities: ['Dashboard reporting for infrastructure support', 'Automation of deployment activities', 'Operational tooling for day-to-day IT work'],
+    value: 'Supports infrastructure teams with accessible operational information and automation for work that would otherwise require repeated manual steps.',
+    measured: false,
+  },
+  '09': {
+    audience: 'Internal business operations',
+    overview: 'A customized enterprise resource planning (ERP) system developed for internal company use. The application brings business processes into a company-specific system, with the scope shaped around internal operations rather than a generic public-facing product.',
+    contribution: 'Developed a tailored ERP application for the company’s internal operational requirements, translating business processes into a usable software system.',
+    capabilities: ['Company-specific enterprise resource planning', 'Support for internal business processes', 'Customized operational workflows'],
+    value: 'Provides a dedicated system for internal operations, with workflows tailored to the organization using it.',
+    measured: false,
+  },
+  '10': {
+    audience: 'Heavy-equipment and reliability engineering teams',
+    overview: 'A customized asset-management application for organizations working with heavy equipment and reliability engineering. It focuses on the operational context of equipment assets and the teams responsible for managing them.',
+    contribution: 'Developed a tailored asset-management solution around the needs of heavy-equipment organizations and reliability engineering teams.',
+    capabilities: ['Asset management for heavy-equipment operations', 'Support for organizational asset workflows', 'Reliability engineering use cases'],
+    value: 'Applies custom software to a specialized operational domain, aligning asset management with the people and equipment involved.',
+    measured: false,
+  },
+  '11': {
+    audience: 'School administration teams',
+    overview: 'A school operations application covering students, school buses, and class assignments. It brings related administrative responsibilities into one system so that student management includes both classroom organization and transport coordination.',
+    contribution: 'Built a student-management application covering student information, bus management, and class assignments for school operations.',
+    capabilities: ['Student information management', 'School bus administration', 'Class assignments and organization'],
+    value: 'Connects student, classroom, and transport administration in a single application for school staff.',
+    measured: false,
+  },
+} as const;
+
 export const projects = [
   { number: '01', category: 'modernization', title: 'Redesigned Engineering Software', summary: 'Modernized structural engineering software with time tracking, Power BI reports, automated workflows, and SharePoint integration.', result: '75% less manual paperwork', tags: ['Angular', '.NET Core', 'Power BI'], icon: Workflow },
   { number: '02', category: 'intelligence', title: 'AI Teams Chatbot', summary: 'Integrated Microsoft Teams with Azure Bot, OpenAI, and LUIS for time tracking, automatic scheduling, and organization lookups.', result: 'AI support inside daily workflows', tags: ['Azure AI', 'OpenAI', 'MS Teams'], icon: Bot },
-  { number: '03', category: 'intelligence', title: 'Language Assessment Software', summary: 'Built a language screening, learning, and certification platform with speech-to-text scoring aligned to international standards.', result: '180% higher user engagement', tags: ['Speech-to-text', '.NET', 'Education'], icon: Sparkles },
+  { number: '03', category: 'intelligence', title: 'Language Assessment Software', summary: 'Built a language screening, learning, and certification platform with speech-to-text scoring aligned to international standards.', result: 'Assessment and learning connected', tags: ['Speech-to-text', '.NET', 'Education'], icon: Sparkles },
   { number: '04', category: 'modernization', title: 'Spider Redesign Project', summary: 'Reworked a legacy Python spider into an ETL implementation using Node.js and PHP to collect jobs from ATS and job sites.', result: '75% accuracy gain · 100% detail capture', tags: ['ETL', 'Node.js', 'PHP'], icon: Network },
   { number: '05', category: 'modernization', title: 'Data Retention System', summary: 'Developed microservice support for financial data integrity and Power BI integration across credit and finance reporting.', result: '30% fewer post-release bugs', tags: ['Microservices', 'Docker', 'Power BI'], icon: Database },
   { number: '06', category: 'platforms', title: 'Social Media Platform Management', summary: 'Created a central workspace for scheduling, managing, and controlling activity across multiple social platforms.', result: 'One source of operational control', tags: ['Social APIs', 'Scheduling', 'Angular'], icon: Layers3 },
