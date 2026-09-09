@@ -51,8 +51,6 @@ h1 { margin: 0 0 20px; font-size: clamp(56px,6.6vw,92px); line-height: .98; font
 .location { display: flex; align-items: center; gap: 7px; font-size: 14px; color: var(--muted); margin: 0 0 28px; }
 .intro .location { margin-bottom: 8px; }
 .location > svg { flex: none; }
-.residence-note { margin: 0 0 8px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-.contact-card .residence-detail { margin: 8px 0 0; line-height: 1.5; }
 .canadian-experience { display: flex; align-items: center; gap: 7px; max-width: 100%; margin: 0 0 24px; padding: 4px 0; color: var(--accent-text); font-size: 13px; line-height: 1.5; text-align: left; }
 .canadian-experience svg { flex: none; }
 .canadian-experience:hover { text-decoration: underline; text-underline-offset: 4px; }
