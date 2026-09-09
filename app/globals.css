@@ -49,6 +49,15 @@ button { border: 0; background: none; }
 h1 { margin: 0 0 20px; font-size: clamp(56px,6.6vw,92px); line-height: .98; font-weight: 300; letter-spacing: -.055em; }h1 span { color: var(--accent-text); }
 .intro-summary { font-size: clamp(18px,1.7vw,24px); line-height: 1.45; margin: 0 0 22px; }
 .location { display: flex; align-items: center; gap: 7px; font-size: 14px; color: var(--muted); margin: 0 0 28px; }
+.intro .location { margin-bottom: 8px; }
+.canadian-experience { display: flex; align-items: center; gap: 7px; max-width: 100%; margin: 0 0 24px; padding: 4px 0; color: var(--accent-text); font-size: 13px; line-height: 1.5; text-align: left; }
+.canadian-experience svg { flex: none; }
+.canadian-experience:hover { text-decoration: underline; text-underline-offset: 4px; }
+.contact-location { padding: 22px 0; display: flex; gap: 18px; align-items: center; border-bottom: 1px solid var(--line); font-size: 16px; }
+.contact-location > svg { flex: none; }
+.contact-location span { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 800px) { .contact-location { font-size: 14px; gap: 12px; } }
+@media (max-width: 560px) { .contact-location { padding: 14px 0; } .canadian-experience { margin-bottom: 18px; } }
 .actions { display: flex; gap: 26px; align-items: center; flex-wrap: wrap; }
 .primary { display: inline-flex; gap: 26px; align-items: center; justify-content: center; background: var(--ink); color: var(--paper); padding: 13px 20px; font-size: 14px; font-weight: 500; border-radius: 2px; transition: transform .2s; }
 .primary:hover { transform: translateY(-2px); }

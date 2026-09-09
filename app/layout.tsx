@@ -8,7 +8,7 @@ const publicBase = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Victor Paul Noel | Senior Software Engineer',
-  description: 'Software architect and senior full-stack engineer specializing in scalable software, legacy modernization, Azure, AI, and high-impact business systems.',
+  description: 'Senior full-stack software engineer based in Dieppe, New Brunswick, Canada, specializing in .NET, Angular, Azure, and legacy modernization.',
   openGraph: {
     title: 'Victor Paul Noel | Senior Software Engineer',
     description: 'Engineering systems that move business — from legacy modernization to Azure, AI, and scalable product delivery.',
