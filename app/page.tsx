@@ -187,7 +187,8 @@ export default function Home() {
             <p className="eyebrow"><span className="status-dot" /> SENIOR SOFTWARE ENGINEER<span className="terminal-cursor" aria-hidden="true">_</span></p>
             <h1>Victor Paul<br /><span>Noel.</span></h1>
             <p className="intro-summary">I build reliable software<br className="desktop-break" /> that makes business simpler.</p>
-            <p className="location"><MapPin size={15} /> Dieppe, New Brunswick, Canada</p>
+            <p className="location"><MapPin size={15} /><span>Cebu, Philippines · Dieppe, New Brunswick, Canada</span></p>
+            <p className="residence-note">Previously lived in Canada for approximately three years.</p>
             <button className="canadian-experience" onClick={() => { setRoleIndex(roles.findIndex(role => role.company === 'University of Fredericton')); navigate(1); }}>Canadian experience · University of Fredericton <ArrowUpRight size={15} /></button>
             <div className="actions"><a className="primary" href="mailto:dev.vpauln@gmail.com">Let's talk <ArrowUpRight size={18} /></a><button className="text-button" onClick={() => navigate(2)}>View projects <ArrowRight size={17} /></button></div>
           </div>
@@ -250,7 +251,7 @@ export default function Home() {
         </TabsContent>
         <TabsContent value="Contact" className="view contact-view">
           <div><p className="eyebrow">LET'S CONNECT</p><h2>Good work starts<br />with a conversation<span>.</span></h2><p className="intro-summary">Have a role, a project, or a system<br className="desktop-break" /> that needs a fresh perspective?</p><a className="primary" href="mailto:dev.vpauln@gmail.com">Email Victor <ArrowUpRight size={18} /></a></div>
-          <aside className="contact-card"><a href="mailto:dev.vpauln@gmail.com"><Mail size={21} /><span><small>Email</small>dev.vpauln@gmail.com</span><ArrowUpRight size={18} /></a><a href="https://www.linkedin.com/in/vpnoel/" target="_blank" rel="noreferrer"><ArrowUpRight size={21} /><span><small>LinkedIn</small>linkedin.com/in/vpnoel</span><ArrowUpRight size={18} /></a><div className="contact-location"><MapPin size={21} /><span><small>Based in Canada</small>Dieppe, New Brunswick, Canada</span></div><a href={base + '/Victor-Paul-Noel-CV.pdf'} download><Download size={21} /><span><small>Experience & qualifications</small>Download résumé</span><ArrowDown size={18} /></a></aside>
+          <aside className="contact-card"><a href="mailto:dev.vpauln@gmail.com"><Mail size={21} /><span><small>Email</small>dev.vpauln@gmail.com</span><ArrowUpRight size={18} /></a><a href="https://www.linkedin.com/in/vpnoel/" target="_blank" rel="noreferrer"><ArrowUpRight size={21} /><span><small>LinkedIn</small>linkedin.com/in/vpnoel</span><ArrowUpRight size={18} /></a><div className="contact-location"><MapPin size={21} /><span><small>Locations & background</small>Cebu, Philippines<br />Dieppe, New Brunswick, Canada<small className="residence-detail">Previously lived in Canada for approximately three years.</small></span></div><a href={base + '/Victor-Paul-Noel-CV.pdf'} download><Download size={21} /><span><small>Experience & qualifications</small>Download résumé</span><ArrowDown size={18} /></a></aside>
         </TabsContent>
       </div>
     </Tabs>
